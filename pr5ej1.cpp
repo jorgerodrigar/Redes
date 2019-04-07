@@ -9,7 +9,6 @@ int main(int argc, char** argv){
     struct addrinfo hints;
     memset((void*)&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_UNSPEC;
-    //hints.ai_socktype = SOCK_DGRAM;
     struct addrinfo *res;
 
     int rc = getaddrinfo(argv[1], argv[2], &hints, &res);
