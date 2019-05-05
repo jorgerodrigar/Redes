@@ -46,8 +46,6 @@ int main(int argc, char** argv){
         struct tm* tiempo;
         char bufferTiempo[9];
 
-        std::cout << "Mensaje: " << buffer << " IP: " << host << " Puerto: " << serv << std::endl;
-
         switch(buffer[0]){
             case 't': // enviamos respuesta al cliente (tiempo)
             tiempo = localtime(&aux);
@@ -65,6 +63,8 @@ int main(int argc, char** argv){
             run=false;
             break;
         }
+
+        std::cout << "Mensaje: " << buffer << " IP: " << host << " Puerto: " << serv << std::endl;
     }
 
     return 0;

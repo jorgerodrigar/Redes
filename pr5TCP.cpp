@@ -44,7 +44,7 @@ int main(int argc, char** argv){
         // bucle para cada mensaje de la conexion
         while(true){
         	bytes = recv(sd_cliente, (void*)buffer, sizeof(char)*80, 0);
-        	if(buffer[0] == 'q' && bytes <= 1)break; // si se escribe q, se cierra
+        	if(buffer[0] == 'q' && bytes <= 1 || bytes <= 0)break; // si se escribe q, se cierra
         	buffer[bytes] = '\0';
         	//std::cout << "Mensaje: " << buffer;
         	sendto(sd_cliente, buffer, bytes, 0, &src_addr, addrlen); // enviar respuesta al cliente (eco)

@@ -13,6 +13,11 @@ int main(int argc, char** argv){
     hints.ai_socktype = SOCK_DGRAM;
     struct addrinfo *res;
 
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(7777);
+    server_addr.sin_addr = *((struct in_addr *)argv[1]);
+
     int rc = getaddrinfo(argv[1], argv[2], &hints, &res);
 
     if(rc != 0){
@@ -25,13 +30,15 @@ int main(int argc, char** argv){
 
 	// protocolo = 0 -> el protocolo se elige en funcion del tipo de socket
     int sd = socket(res->ai_family, res->ai_socktype, 0);
-    bind(sd, res->ai_addr, res->ai_addrlen); // enlazado
     freeaddrinfo(res);
 
     char host[NI_MAXHOST];
     char serv[NI_MAXSERV];
 
-    sendto(sd, argv[3], 1, 0, &src_addr, addrlen);
+    getnameinfo(&src_addr, addrlen, host, NI_MAXHOST, serv, NI_MAXSERV,
+         NI_NUMERICHOST | NI_NUMERICSERV);
+
+    sendto(sd, "hola", 4, 0, (struct sockaddr *)&server_addr, addrlen);
 
     return 0;
 }
