@@ -5,7 +5,7 @@
 #include <iostream>
 #include <pthread.h>
 
-static bool fin = true;
+static bool fin = false;
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
@@ -22,7 +22,7 @@ public:
 	{
 		int i = 0;
 
-    	while(fin){
+    	while(true){
         	struct sockaddr src_addr;
         	socklen_t addrlen=sizeof(struct sockaddr);
 
@@ -43,8 +43,14 @@ public:
          	// echo
             sendto(sd, buffer, bytes, 0, &src_addr, addrlen);
 
-        	i++; if(i == 5) fin=true;
-        	if(fin)pthread_cond_signal(&cond); // protegemos la variable fin
+            if(buffer[0] == 'q'){
+                pthread_mutex_lock(&mtx);
+                fin = true;
+                pthread_cond_signal(&cond); // protegemos la variable fin
+                pthread_mutex_unlock(&mtx);
+
+                break;
+            }
     	}	
 	}
 };
@@ -90,7 +96,7 @@ int main(int argc, char** argv){
 
     pthread_mutex_lock(&mtx);
     while(!fin)pthread_cond_wait(&cond, &mtx);
-    pthread_mutex_lock(&mtx);
+    pthread_mutex_unlock(&mtx);
 
     return 0;
 }

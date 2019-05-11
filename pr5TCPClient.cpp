@@ -11,7 +11,7 @@ int main(int argc, char** argv){
     char buffer[80];
     memset((void*)&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET; // IPv4
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = SOCK_STREAM; // TCP
     struct addrinfo *res;
 
     int rc = getaddrinfo(argv[1], argv[2], &hints, &res);
@@ -26,6 +26,8 @@ int main(int argc, char** argv){
 
 	// protocolo = 0 -> el protocolo se elige en funcion del tipo de socket
     int sd = socket(res->ai_family, res->ai_socktype, 0);
+
+    int sd_server = connect(sd, res->ai_addr, res->ai_addrlen);
 
     sendto(sd, argv[3], sizeof(argv[3]), 0, res->ai_addr, res->ai_addrlen);
 
