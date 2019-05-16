@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-
+//
 class Jugador: public Serializable
 {
 public:
