@@ -112,18 +112,18 @@ public:
 
     friend bool operator== (const Socket &s1, const Socket &s2);
 
+    /**
+     *  Representación binaria del extremo, usada por servidor y cliente
+     */
+    struct sockaddr sa;
+    socklen_t       sa_len;
+
 protected:
 
     /**
      *  Descriptor del socket
      */
     int sd;
-
-    /**
-     *  Representación binaria del extremo, usada por servidor y cliente
-     */
-    struct sockaddr sa;
-    socklen_t       sa_len;
 };
 
 #endif /* SOCKET_H_ */

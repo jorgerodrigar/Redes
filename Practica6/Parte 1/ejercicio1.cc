@@ -37,9 +37,9 @@ public:
         close(fileIndex);
     }
 
-    int from_bin(char * fileName)
+    int from_bin(char * data)
     {
-        int fileIndex = open(fileName, O_RDWR);
+        /*int fileIndex = open(fileName, O_RDWR);
 
         char * tmp;
         
@@ -50,7 +50,11 @@ public:
         read(fileIndex, tmp, sizeof(int16_t));
         memcpy(&y, tmp, sizeof(int16_t));
 
-        close(fileIndex);
+        close(fileIndex);*/
+
+        memcpy(name, data, sizeof(char) * MAX_NAME);
+        memcpy(&x, data, sizeof(int16_t));
+        memcpy(&y, data, sizeof(int16_t));
 
         return 0;
     }
@@ -73,7 +77,7 @@ int main(int argc, char **argv)
     Jugador one_w("Player_ONE", 123, 987);
 
     one_w.to_bin();
-    one_r.from_bin((char*)"ONE_W");
+    one_r.from_bin(one_w.data());
     one_r.dumpInfo();
 
 
