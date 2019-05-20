@@ -23,7 +23,6 @@ Socket::Socket(const char * address, const char * port):sd(-1)
     sd = socket(res->ai_family, res->ai_socktype, 0);
     sa =  *res->ai_addr; 
     sa_len = res->ai_addrlen;
-    bind();
     freeaddrinfo(res);
 }
 
@@ -34,7 +33,7 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 
     char buffer[MAX_MESSAGE_SIZE];
 
-    ssize_t bytes = ::recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sock->sa, &sock->sa_len);
+    ssize_t bytes = ::recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sa, &sa_len);
 
     if ( bytes <= 0 )
     {
@@ -53,9 +52,6 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 
 int Socket::send(Serializable& obj, const Socket& sock)
 {
-    struct sockaddr sa;
-    socklen_t sa_len = sizeof(struct sockaddr);
-
     obj.to_bin();
 
     ssize_t bytes = sendto(sd, obj.data(), MAX_MESSAGE_SIZE, 0, &sock.sa, sock.sa_len);

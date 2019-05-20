@@ -118,8 +118,6 @@ public:
     struct sockaddr sa;
     socklen_t       sa_len;
 
-protected:
-
     /**
      *  Descriptor del socket
      */
