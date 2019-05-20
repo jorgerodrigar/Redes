@@ -8,9 +8,9 @@ void ChatMessage::to_bin()
 
     //Serializar los campos type, nick y message en el buffer _data
 
-    memcpy(_data, type, sizeof(uint8_t));
-    memcpy(_data, nick, sizeof(char) * 80);
-    memcpy(_data, message,  sizeof(char) * 80);
+    memcpy(_data, &type, sizeof(uint8_t));
+    memcpy(_data, &nick, sizeof(char) * 80);
+    memcpy(_data, &message,  sizeof(char) * 80);
 }
 
 int ChatMessage::from_bin(char * bobj)
@@ -20,9 +20,9 @@ int ChatMessage::from_bin(char * bobj)
     memcpy(static_cast<void *>(_data), bobj, MESSAGE_SIZE);
 
     //Reconstruir la clase usando el buffer _data
-    memcpy(type, _data, sizeof(uint8_t));
-    memcpy(nick, _data, sizeof(char) * 80);
-    memcpy(message, _data,  sizeof(char) * 80);
+    memcpy(&type, &_data, sizeof(uint8_t));
+    memcpy(&nick, &_data, sizeof(char) * 80);
+    memcpy(&message, &_data,  sizeof(char) * 80);
 
     return 0;
 }
@@ -45,7 +45,7 @@ void ChatServer::do_messages()
         socklen_t clientelen=sizeof(struct sockaddr);
 
 		// procesamiento del mensaje
-        bytes=recvfrom(socket, (void*)buffer, ChatMessage::MESSAGE_SIZE, 0, &cliente, &clientelen);
+        bytes=recvfrom(socket, (void*)buffer, ChatMessage::MESSAGE_SIZE, 0, &addrcliente, &clientelen);
         buffer[bytes]='\0'; // le decimos que es final de cadena (llega hasta ahi)
 
         Socket cliente = Socket(addrcliente, clientelen);
@@ -55,20 +55,20 @@ void ChatServer::do_messages()
 
         switch(msgType){
             case ChatMessage::LOGIN:
-            	clientes.push_back(&cliente); // REPASAR ESTO
+            	clients.push_back(&cliente); // REPASAR ESTO
             break;
 
             case ChatMessage::MESSAGE:
-            	for(int i = 0; i< clientes.size(); i++){
-            		if(!(clientes[i] == cliente))
-            			sendto(sd, buffer, hatMessage::MESSAGE_SIZE, 0, &clientes[i].sa, clientes[i].sa_len);
+            	for(int i = 0; i< clients.size(); i++){
+            		if(!(clients[i] == cliente))
+            			sendto(socket, buffer, ChatMessage::MESSAGE_SIZE, 0, &clients[i].sa, clients[i].sa_len);
             	}
             break;
 
             case ChatMessage::LOGOUT:
-            	auto it = clientes.begin();
+            	auto it = clients.begin();
             	while(it!=cliente)it++;
-            	if(it != clientes.end())clientes.erase(it);
+            	if(it != clients.end())clients.erase(it);
             break;
         }
     }
@@ -99,7 +99,8 @@ void ChatClient::input_thread()
     while (true)
     {
         // Leer stdin con std::getline
-        char* msg = std::getline();
+        char* msg;
+        std::getline(std::cin, msg);
 
         // Enviar al servidor usando socket
         ChatMessage em(nick, msg);
@@ -115,7 +116,7 @@ void ChatClient::net_thread()
     {
         //Recibir Mensajes de red
         ChatMessage em;
-        socket.recv(em, &socket);
+        socket.recv(em, socket);
 
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
         if(em.nick != nick)std::cout << em.nick << ": " << em.message << std::endl;

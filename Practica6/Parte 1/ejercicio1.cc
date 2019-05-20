@@ -39,22 +39,25 @@ public:
 
     int from_bin(char * data)
     {
-        /*int fileIndex = open(fileName, O_RDWR);
+        //int fileIndex = open(fileName, O_RDWR);
 
-        char * tmp;
+        char * tmp = data;
         
-        read(fileIndex, tmp, sizeof(char) * MAX_NAME);
+        //read(fileIndex, tmp, sizeof(char) * MAX_NAME);
         memcpy(name, tmp, sizeof(char) * MAX_NAME);
-        read(fileIndex, tmp, sizeof(int16_t));
+        tmp+=sizeof(char) * MAX_NAME;
+        //read(fileIndex, tmp, sizeof(int16_t));
         memcpy(&x, tmp, sizeof(int16_t));
-        read(fileIndex, tmp, sizeof(int16_t));
+        tmp+=sizeof(int16_t);
+        //read(fileIndex, tmp, sizeof(int16_t));
         memcpy(&y, tmp, sizeof(int16_t));
+        tmp+=sizeof(int16_t);
 
-        close(fileIndex);*/
+        //close(fileIndex);
 
-        memcpy(name, data, sizeof(char) * MAX_NAME);
-        memcpy(&x, data, sizeof(int16_t));
-        memcpy(&y, data, sizeof(int16_t));
+        //memcpy(name, data, sizeof(char) * MAX_NAME);
+        //memcpy(&x, data, sizeof(int16_t));
+        //memcpy(&y, data, sizeof(int16_t));
 
         return 0;
     }
